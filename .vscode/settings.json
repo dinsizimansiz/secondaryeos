@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "*.tcc": "cpp",
+        "unordered_map": "cpp",
+        "string_view": "cpp",
+        "deque": "cpp",
+        "vector": "cpp",
+        "optional": "cpp"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Disabled"
+}

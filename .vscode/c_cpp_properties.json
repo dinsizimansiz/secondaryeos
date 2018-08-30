@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${HOME}/Desktop/eos/contracts",
+                "${HOME}/boost_1_66_0/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang++-4.0",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

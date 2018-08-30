@@ -14,12 +14,12 @@ namespace second
     {
     public:
         using contract::contract;
-        secondary(account_name self):contract(self),_userdata(self,self) {}
+        secondary(account_name self):contract(self),userdata(self,self) {}
         //@abi action
-        void add(account_name s, uint8_t age,float balance)
+        void add(account_name s, uint8_t age,uint64_t balance)
         {
-            _userdata.emplace(get_self(),[&](auto &yaprak){
-                yaprak.id = _userdata.available_primary_key()   ;
+            userdata.emplace(get_self(),[&](auto &yaprak){
+                yaprak.id = userdata.available_primary_key()   ;
                 yaprak.age = age;
                 yaprak.balance = balance;
             });
@@ -35,14 +35,14 @@ namespace second
 
             auto primary_key() const {return id;}
             uint8_t getage() const {return age;}
-            float getbalance() const {return balance;}
+            uint64_t getbalance() const {return balance;}
             EOSLIB_SERIALIZE(user,(id)(age)(balance));
         };
         typedef multi_index<N(user),user,
         indexed_by<N(byage),const_mem_fun<user,uint8_t,&user::getage>>,
-        indexed_by<N(bybalance), const_mem_fun<user,float,&user::getbalance>>
+        indexed_by<N(bybalance), const_mem_fun<user,uint64_t,&user::getbalance>>
         > userbase ; 
-        userbase _userdata;
+        userbase userdata;
     };
 
     EOSIO_ABI(secondary,(add));
