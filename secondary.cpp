@@ -16,13 +16,59 @@ namespace second
         using contract::contract;
         secondary(account_name self):contract(self),userdata(self,self) {}
         //@abi action
-        void add(account_name s, uint8_t age,uint64_t balance)
+        void add(account_name s, uint64_t age,uint64_t balance)
         {
+            require_auth(s);
+            auto it = userdata.find(s);
+            eosio_assert(it == userdata.end(),"User  found.");
             userdata.emplace(get_self(),[&](auto &yaprak){
                 yaprak.id = userdata.available_primary_key()   ;
                 yaprak.age = age;
                 yaprak.balance = balance;
             });
+        }
+        //@abi action
+        void del(account_name self)
+        {
+            require_auth(self);
+            auto it = userdata.find(self);
+            eosio_assert(it != userdata.end(),"User cannot be found");
+            userdata.erase(it);
+        }
+        //@abi action
+        void sortage(account_name self,uint64_t minage,uint64_t maxage)
+        {
+            require_auth(self);
+            auto agex = userdata.get_index<N(byage)>();
+            for(const auto& item : agex)
+            {
+                auto age = item.getage();
+                if(age >= minage && age <= maxage)
+                    print(age );
+            }
+        }
+        //@abi action
+        void sortbalance(account_name self,uint64_t minbalance,uint64_t maxbalance)
+        {
+            require_auth(self);
+            auto balancex = userdata.get_index<N(bybalance)>();
+            for(const auto& item : balancex)
+            {
+                auto balance = item.getbalance();
+                if(balance >= minbalance && balance <= maxbalance)
+                    print(balance );
+            }
+        }
+        //@abi action
+        void getplayer(const account_name search)
+        {
+            
+            auto it = userdata.find(search);
+            eosio_assert(it != userdata.end(),"Cannot get the player.");
+            auto player = userdata.get(it);
+            print(player.primary_key()," has ",player.getbalance(),"at his age ",player.getage());
+            
+
         }
     private:  
 
@@ -30,20 +76,20 @@ namespace second
         struct user 
         {
             account_name id;
-            uint8_t age;
-            float balance;
+            uint64_t age;
+            uint64_t balance;
 
             auto primary_key() const {return id;}
-            uint8_t getage() const {return age;}
+            uint64_t getage() const {return age;}
             uint64_t getbalance() const {return balance;}
             EOSLIB_SERIALIZE(user,(id)(age)(balance));
         };
         typedef multi_index<N(user),user,
-        indexed_by<N(byage),const_mem_fun<user,uint8_t,&user::getage>>,
+        indexed_by<N(byage),const_mem_fun<user,uint64_t,&user::getage>>,
         indexed_by<N(bybalance), const_mem_fun<user,uint64_t,&user::getbalance>>
         > userbase ; 
         userbase userdata;
     };
 
-    EOSIO_ABI(secondary,(add));
+    EOSIO_ABI(secondary,(add)(del)(sortage)(sortbalance)(getplayer));
 }
