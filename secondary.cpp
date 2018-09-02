@@ -63,10 +63,10 @@ namespace second
         void getplayer(const account_name search)
         {
             
-            auto it = userdata.find(search);
+            auto it = this->userdata.find(search);
             eosio_assert(it != userdata.end(),"Cannot get the player.");
-            auto player = userdata.get(it);
-            print(player.primary_key()," has ",player.getbalance(),"at his age ",player.getage());
+            struct user usher = this->userdata.get(search);
+            print(usher.primary_key()," has ",usher.getbalance(),"at his age ",usher.getage());
             
 
         }
@@ -79,7 +79,7 @@ namespace second
             uint64_t age;
             uint64_t balance;
 
-            auto primary_key() const {return id;}
+            account_name primary_key() const {return id;}
             uint64_t getage() const {return age;}
             uint64_t getbalance() const {return balance;}
             EOSLIB_SERIALIZE(user,(id)(age)(balance));
